@@ -70,37 +70,7 @@ history_age = age_model.fit(x_train_age, y_train_age,
 
 age_model.save('age_model_50epochs.h5')
 
-################################################################
-#Define gender model and train
-##################################################
-gender_model = Sequential()
 
-gender_model.add(Conv2D(36, kernel_size=3, activation='relu', input_shape=(200,200,3)))
-
-gender_model.add(MaxPool2D(pool_size=3, strides=2))
-gender_model.add(Conv2D(64, kernel_size=3, activation='relu'))
-gender_model.add(MaxPool2D(pool_size=3, strides=2))
-
-gender_model.add(Conv2D(128, kernel_size=3, activation='relu'))
-gender_model.add(MaxPool2D(pool_size=3, strides=2))
-
-gender_model.add(Conv2D(256, kernel_size=3, activation='relu'))
-gender_model.add(MaxPool2D(pool_size=3, strides=2))
-
-gender_model.add(Conv2D(512, kernel_size=3, activation='relu'))
-gender_model.add(MaxPool2D(pool_size=3, strides=2))
-
-gender_model.add(Flatten())
-gender_model.add(Dropout(0.2))
-gender_model.add(Dense(512, activation='relu'))
-gender_model.add(Dense(1, activation='sigmoid', name='gender'))
-
-gender_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-
-history_gender = gender_model.fit(x_train_gender, y_train_gender,
-                        validation_data=(x_test_gender, y_test_gender), epochs=50)
-
-gender_model.save('gender_model_50epochs.h5')
 
 
 ############################################################
@@ -131,21 +101,3 @@ plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
 plt.show()
-
-####################################################################
-from keras.models import load_model
-#Test the model
-my_model = load_model('gender_model_50epochs.h5', compile=False)
-
-
-predictions = my_model.predict(x_test_gender)
-y_pred = (predictions>= 0.5).astype(int)[:,0]
-
-from sklearn import metrics
-print ("Accuracy = ", metrics.accuracy_score(y_test_gender, y_pred))
-
-#Confusion Matrix - verify accuracy of each class
-from sklearn.metrics import confusion_matrix
-import seaborn as sns
-cm=confusion_matrix(y_test_gender, y_pred)  
-sns.heatmap(cm, annot=True)
